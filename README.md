@@ -15,3 +15,6 @@ python -m http.server 8000
 ```
 
 Puis consultez http://localhost:8000/
+
+## Configuration Supabase (optionnelle)
+Si vous devez consommer une API Supabase côté client, ne placez jamais directement vos clés publiques dans le dépôt. Copiez `config.example.js` en `config.js`, renseignez vos valeurs Supabase et gardez ce fichier hors du contrôle de version (il est déjà ignoré via `.gitignore`).
