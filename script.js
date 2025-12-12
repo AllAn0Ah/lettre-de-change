@@ -155,3 +155,50 @@ async function loadLetters(userId) {
     container.appendChild(card);
   });
 }
+
+
+// ===============================
+// CRÉATION D'UNE LETTRE
+// ===============================
+const form = document.getElementById("letter-form");
+
+if (form) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const {
+      data: { user }
+    } = await window.supabaseClient.auth.getUser();
+
+    if (!user) {
+      alert("Vous devez être connecté");
+      return;
+    }
+
+    const newLetter = {
+      user_id: user.id,
+      tireur: document.getElementById("tireur").value,
+      tire: document.getElementById("tire").value,
+      montant: parseFloat(document.getElementById("montant").value),
+      date_echeance: document.getElementById("date_echeance").value,
+      commentaire: document.getElementById("commentaire").value,
+      statut: "brouillon"
+    };
+
+    const { error } = await window.supabaseClient
+      .from("letters")
+      .insert(newLetter);
+
+    if (error) {
+      console.error(error);
+      alert("Erreur lors de la création");
+      return;
+    }
+
+    alert("Lettre créée avec succès ✅");
+    form.reset();
+
+    // 🔄 Recharge les lettres
+    loadLetters(user.id);
+  });
+}
