@@ -1,28 +1,31 @@
 // ===============================
-// Menu mobile
+// DOM READY
 // ===============================
-document.addEventListener('DOMContentLoaded', async () => {
-  const toggle = document.querySelector('.menu-toggle');
-  const mobileMenu = document.getElementById('mobile-menu');
+document.addEventListener("DOMContentLoaded", async () => {
+
+  // ===============================
+  // Menu mobile
+  // ===============================
+  const toggle = document.querySelector(".menu-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
 
   if (toggle && mobileMenu) {
-    toggle.addEventListener('click', () => {
-      const expanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!expanded));
+    toggle.addEventListener("click", () => {
+      const expanded = toggle.getAttribute("aria-expanded") === "true";
+      toggle.setAttribute("aria-expanded", String(!expanded));
       mobileMenu.hidden = expanded;
-      mobileMenu.setAttribute('aria-expanded', String(!expanded));
     });
   }
 
   // ===============================
   // Supabase init
   // ===============================
-  const SUPABASE_URL = "https://cumlqklryzqubwawnnnf.supabase.co";
-  const SUPABASE_ANON_KEY = "sb_publishable_93FBSHTNiuYW9HpWwPHadQ_dpQ5Qilu";
+  const SUPABASE_URL = "https://cumlqklyrzqubawwnnf.supabase.co";
+  const SUPABASE_ANON_KEY = "COLLE_ICI_TA_PUBLISHABLE_KEY";
 
   window.supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
+    "https://cumlqklryzqubwawnnnf.supabase.co",
+    "sb_publishable_93FBSHTNiuYW9HpWwPHadQ_dpQ5Qilu"
   );
 
   // ===============================
@@ -36,7 +39,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       const { error } = await window.supabaseClient.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin
+          redirectTo: window.location.origin,
+          queryParams: {
+            prompt: "select_account" // 🔑 FORCE le choix du compte
+          }
         }
       });
 
@@ -63,9 +69,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateUI(session?.user);
 
   // ===============================
-  // Écoute des changements d'auth
+  // Écoute changements auth
   // ===============================
-  window.supabaseClient.auth.onAuthStateChange((event, session) => {
+  window.supabaseClient.auth.onAuthStateChange((_event, session) => {
     updateUI(session?.user);
   });
 });
@@ -79,11 +85,12 @@ function updateUI(user) {
   const userName = document.getElementById("user-name");
 
   if (user) {
-    console.log("Utilisateur connecté :", user);
-
     if (googleBtn) googleBtn.style.display = "none";
     if (logoutBtn) logoutBtn.style.display = "inline-block";
-    if (userName) userName.textContent = user.user_metadata.full_name || user.email;
+    if (userName) {
+      userName.textContent =
+        user.user_metadata.full_name || user.email;
+    }
   } else {
     if (googleBtn) googleBtn.style.display = "inline-block";
     if (logoutBtn) logoutBtn.style.display = "none";
