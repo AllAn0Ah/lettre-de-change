@@ -18,18 +18,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===============================
-  // Supabase init
+  // Supabase init (CORRIGÉ)
   // ===============================
   const SUPABASE_URL = "https://cumlqklyrzqubawwnnf.supabase.co";
-  const SUPABASE_ANON_KEY = "COLLE_ICI_TA_PUBLISHABLE_KEY";
+  const SUPABASE_ANON_KEY = "sb_publishable_93FBSHTNiuYW9HpWwPHadQ_dpQ5Qilu";
 
   window.supabaseClient = window.supabase.createClient(
-    "https://cumlqklryzqubwawnnnf.supabase.co",
-    "sb_publishable_93FBSHTNiuYW9HpWwPHadQ_dpQ5Qilu"
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
   );
 
   // ===============================
-  // Boutons
+  // Boutons auth
   // ===============================
   const googleBtn = document.getElementById("google-login");
   const logoutBtn = document.getElementById("logout");
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         options: {
           redirectTo: window.location.origin,
           queryParams: {
-            prompt: "select_account" // 🔑 FORCE le choix du compte
+            prompt: "select_account"
           }
         }
       });
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // ===============================
-  // Session existante au chargement
+  // Session au chargement
   // ===============================
   const {
     data: { session }
@@ -69,15 +69,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateUI(session?.user);
 
   // ===============================
-  // Écoute changements auth
+  // Écoute auth (login / logout)
   // ===============================
   window.supabaseClient.auth.onAuthStateChange((_event, session) => {
     updateUI(session?.user);
   });
 });
 
+
 // ===============================
-// UI helpers
+// UI HELPERS
 // ===============================
 function updateUI(user) {
   const googleBtn = document.getElementById("google-login");
@@ -93,10 +94,9 @@ function updateUI(user) {
         user.user_metadata.full_name || user.email;
     }
 
-    // 🔐 Affiche l’espace lettres
     if (appSection) appSection.style.display = "block";
 
-    // Charge les lettres de l’utilisateur
+    // 🔄 Charger les lettres de l'utilisateur
     loadLetters(user.id);
 
   } else {
@@ -108,13 +108,15 @@ function updateUI(user) {
   }
 }
 
-//chargement des lettres de change( lié à l'utilisateur)
 
+// ===============================
+// CHARGEMENT DES LETTRES
+// ===============================
 async function loadLetters(userId) {
   const container = document.getElementById("letters-list");
   if (!container) return;
 
-  container.innerHTML = "";
+  container.innerHTML = "<p>Chargement...</p>";
 
   const { data, error } = await window.supabaseClient
     .from("letters")
@@ -123,15 +125,17 @@ async function loadLetters(userId) {
     .order("created_at", { ascending: false });
 
   if (error) {
-    container.innerHTML = "<p>Erreur de chargement des lettres.</p>";
     console.error(error);
+    container.innerHTML = "<p>Erreur de chargement des lettres.</p>";
     return;
   }
 
-  if (!data.length) {
+  if (!data || data.length === 0) {
     container.innerHTML = "<p>Aucune lettre de change pour le moment.</p>";
     return;
   }
+
+  container.innerHTML = "";
 
   data.forEach(letter => {
     const card = document.createElement("div");
@@ -143,13 +147,11 @@ async function loadLetters(userId) {
       <p><strong>Échéance :</strong> ${letter.date_echeance}</p>
       <p><strong>Statut :</strong> ${letter.statut}</p>
       <div class="card-actions">
-        <button class="ghost">✏️ Éditer</button>
-        <button class="ghost">👁 Suivi</button>
+        <button class="ghost" data-id="${letter.id}">✏️ Éditer</button>
+        <button class="ghost" data-id="${letter.id}">👁 Suivi</button>
       </div>
     `;
 
     container.appendChild(card);
   });
 }
-
-

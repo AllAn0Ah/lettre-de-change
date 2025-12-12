@@ -66,6 +66,46 @@
    <!-- =============================== -->
 <!-- ESPACE UTILISATEUR CONNECTÉ -->
 <!-- =============================== -->
+
+<!-- =============================== -->
+<!-- FORMULAIRE NOUVELLE LETTRE -->
+<!-- =============================== -->
+<form id="letter-form" class="card" style="margin-top:2rem">
+
+  <h3>Nouvelle lettre de change</h3>
+
+  <div class="field">
+    <label>Tireur</label>
+    <input type="text" id="tireur" required />
+  </div>
+
+  <div class="field">
+    <label>Tiré</label>
+    <input type="text" id="tire" required />
+  </div>
+
+  <div class="field">
+    <label>Montant (€)</label>
+    <input type="number" id="montant" step="0.01" required />
+  </div>
+
+  <div class="field">
+    <label>Date d’échéance</label>
+    <input type="date" id="date_echeance" required />
+  </div>
+
+  <div class="field">
+    <label>Commentaire</label>
+    <textarea id="commentaire"></textarea>
+  </div>
+
+  <button type="submit" class="primary">
+    💾 Créer la lettre
+  </button>
+
+</form>
+
+
 <section id="app" class="section alt" style="display:none">
 
   <div class="section-header">
