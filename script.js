@@ -83,6 +83,7 @@ function updateUI(user) {
   const googleBtn = document.getElementById("google-login");
   const logoutBtn = document.getElementById("logout");
   const userName = document.getElementById("user-name");
+  const appSection = document.getElementById("app");
 
   if (user) {
     if (googleBtn) googleBtn.style.display = "none";
@@ -91,9 +92,64 @@ function updateUI(user) {
       userName.textContent =
         user.user_metadata.full_name || user.email;
     }
+
+    // 🔐 Affiche l’espace lettres
+    if (appSection) appSection.style.display = "block";
+
+    // Charge les lettres de l’utilisateur
+    loadLetters(user.id);
+
   } else {
     if (googleBtn) googleBtn.style.display = "inline-block";
     if (logoutBtn) logoutBtn.style.display = "none";
     if (userName) userName.textContent = "";
+
+    if (appSection) appSection.style.display = "none";
   }
 }
+
+//chargement des lettres de change( lié à l'utilisateur)
+
+async function loadLetters(userId) {
+  const container = document.getElementById("letters-list");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const { data, error } = await window.supabaseClient
+    .from("letters")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    container.innerHTML = "<p>Erreur de chargement des lettres.</p>";
+    console.error(error);
+    return;
+  }
+
+  if (!data.length) {
+    container.innerHTML = "<p>Aucune lettre de change pour le moment.</p>";
+    return;
+  }
+
+  data.forEach(letter => {
+    const card = document.createElement("div");
+    card.className = "feature";
+
+    card.innerHTML = `
+      <h3>${letter.tire || "Tiré non défini"}</h3>
+      <p><strong>Montant :</strong> ${letter.montant} €</p>
+      <p><strong>Échéance :</strong> ${letter.date_echeance}</p>
+      <p><strong>Statut :</strong> ${letter.statut}</p>
+      <div class="card-actions">
+        <button class="ghost">✏️ Éditer</button>
+        <button class="ghost">👁 Suivi</button>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+
