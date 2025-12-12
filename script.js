@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // ===============================
   // Supabase init (CORRIGÉ)
   // ===============================
-  const SUPABASE_URL = "https://cumlqklyrzqubawwnnf.supabase.co";
+  const SUPABASE_URL = "https://cumlqklryzqubwawnnnf.supabase.co";
   const SUPABASE_ANON_KEY = "sb_publishable_93FBSHTNiuYW9HpWwPHadQ_dpQ5Qilu";
 
   window.supabaseClient = window.supabase.createClient(
