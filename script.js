@@ -17,8 +17,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   // ===============================
   // Supabase init
   // ===============================
-  const SUPABASE_URL = "https://xxxx.supabase.co";
-  const SUPABASE_ANON_KEY = "PUBLIC_ANON_KEY";
+  const SUPABASE_URL = "https://cumlqklryzqubwawnnnf.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_93FBSHTNiuYW9HpWwPHadQ_dpQ5Qilu";
 
   window.supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
